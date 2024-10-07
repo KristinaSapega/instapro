@@ -70,7 +70,7 @@ export function uploadImage({ file }) {
 }
 
 export function addPost({ token, description, imageUrl }) {
-  return fetch(`${postsHost}`+"/", {
+  return fetch(`${postsHost}`, {
     method: "POST",
     headers: {
       Authorization: token,

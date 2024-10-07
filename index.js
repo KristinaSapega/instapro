@@ -124,25 +124,4 @@ const renderApp = () => {
             goToPage(POSTS_PAGE); // Возврат на страницу постов после добавления
           })
           .catch((error) => {
-            console.error("Ошибка при добавлении поста:", error);
-            alert("Ошибка при добавлении поста. Попробуйте еще раз.");
-          });
-      },
-    });
-  }
-  
-
-  if (page === POSTS_PAGE) {
-    return renderPostsPageComponent({
-      appEl,
-    });
-  }
-
-  if (page === USER_POSTS_PAGE) {
-    // TODO: реализовать страницу фотографию пользвателя
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
-    return;
-  }
-};
-
-goToPage(POSTS_PAGE);
+            c
