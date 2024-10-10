@@ -1,4 +1,4 @@
-import { addPost, getPosts } from "./api.js";
+import { addPost, getPosts, getUserPosts } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -140,8 +140,20 @@ const renderApp = () => {
 
   if (page === USER_POSTS_PAGE) {
     // TODO: реализовать страницу фотографию пользвателя
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
-    return;
+    page = LOADING_PAGE;
+    renderApp();
+
+    return getUserPosts ({token: getToken(), userId: data.userId })
+    .then((userPosts) => {
+      page = USER_POSTS_PAGE;
+      posts = userPosts;
+      renderApp;
+    })
+    .catch((error) => {
+      console.error("Ошибка при загрузке постов пользователя:", error);
+      alert("Не удалось загрузить посты пользователя");
+      goToPage(POSTS_PAGE);
+    })
   }
 };
 
