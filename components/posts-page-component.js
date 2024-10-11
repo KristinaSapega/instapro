@@ -2,6 +2,8 @@ import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, getToken, renderApp, setNewPosts } from "../index.js";
 import { dislikePost, getPosts, likePost } from "../api.js";
+import {formatDistanceToNow} from "date-fns";
+import { ru } from "date-fns/locale";
 
 export function renderPostsPageComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
@@ -14,6 +16,7 @@ export function renderPostsPageComponent({ appEl }) {
   const postsHtml = posts.length
     ? posts
         .map((post) => {
+          const formattedDate = formatDistanceToNow(new Date(post.createdAt), { addSuffix: true, locale: ru });
           return `
             <li class="post">
               <div class="post-header" data-user-id="${post.user.id}">
@@ -44,7 +47,7 @@ export function renderPostsPageComponent({ appEl }) {
                 ${post.description}
               </p>
               <p class="post-date">
-                ${new Date(post.createdAt).toLocaleString()}
+                ${formattedDate}
               </p>
             </li>
           `;
