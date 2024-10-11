@@ -15,12 +15,13 @@ import {
   removeUserFromLocalStorage,
   saveUserToLocalStorage,
 } from "./helpers.js";
+import { renderUserPostsPageComponent } from "./components/user-posts-page-component.js";
 
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
 
-const getToken = () => {
+export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
   return token;
 };
@@ -30,6 +31,12 @@ export const logout = () => {
   removeUserFromLocalStorage();
   goToPage(POSTS_PAGE);
 };
+
+export const setNewPosts = (newPosts) => {
+  posts = newPosts;
+
+
+}
 
 /**
  * Включает страницу приложения
@@ -71,7 +78,16 @@ export const goToPage = (newPage, data) => {
       console.log("Открываю страницу пользователя: ", data.userId);
       page = USER_POSTS_PAGE;
       posts = [];
-      return renderApp();
+      return getUserPosts({ token: getToken(), userId:data.userId })
+        .then((newPosts) => {
+          page = USER_POSTS_PAGE;
+          posts = newPosts;
+          renderApp();
+        })
+        .catch((error) => {
+          console.error(error);
+          goToPage(POSTS_PAGE);
+        });
     }
 
     page = newPage;
@@ -80,10 +96,11 @@ export const goToPage = (newPage, data) => {
     return;
   }
 
+
   throw new Error("страницы не существует");
 };
 
-const renderApp = () => {
+export const renderApp = () => {
   const appEl = document.getElementById("app");
   if (page === LOADING_PAGE) {
     return renderLoadingPageComponent({
@@ -140,20 +157,21 @@ const renderApp = () => {
 
   if (page === USER_POSTS_PAGE) {
     // TODO: реализовать страницу фотографию пользвателя
-    page = LOADING_PAGE;
-    renderApp();
+    // page = LOADING_PAGE;
+    // renderApp();
 
-    return getUserPosts ({token: getToken(), userId: data.userId })
-    .then((userPosts) => {
-      page = USER_POSTS_PAGE;
-      posts = userPosts;
-      renderApp;
-    })
-    .catch((error) => {
-      console.error("Ошибка при загрузке постов пользователя:", error);
-      alert("Не удалось загрузить посты пользователя");
-      goToPage(POSTS_PAGE);
-    })
+    // return getUserPosts ({token: getToken(), userId: data.userId })
+    // .then((userPosts) => {
+    //   page = USER_POSTS_PAGE;
+    //   posts = userPosts;
+    //   render;
+    // })
+    // .catch((error) => {
+    //   console.error("Ошибка при загрузке постов пользователя:", error);
+    //   alert("Не удалось загрузить посты пользователя");
+    //   goToPage(POSTS_PAGE);
+    // })
+    return renderUserPostsPageComponent({appEl})
   }
 };
 

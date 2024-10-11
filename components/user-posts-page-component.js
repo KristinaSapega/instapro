@@ -1,6 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
+import { posts, goToPage, setNewPosts, getToken, renderApp } from "../index.js";
+import { dislikePost, getPosts, likePost } from "../api.js";
 
 export function renderUserPostsPageComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
@@ -27,7 +28,15 @@ export function renderUserPostsPageComponent({ appEl }) {
                   <img src="./assets/images/${post.isLiked ? 'like-active' : 'like-not-active'}.svg">
                 </button>
                 <p class="post-likes-text">
-                  Нравится: <strong>${post.likes.length}</strong>
+                  Нравится: <strong>${
+                    post.likes.length === 0
+                      ? 0
+                      : post.likes.length === 1
+                      ? post.likes[0].name
+                      : post.likes[post.likes.length - 1].name +
+                        " и еще " +
+                        (post.likes.length - 1)
+                  }</strong>
                 </p>
               </div>
               <p class="post-text">
@@ -63,6 +72,35 @@ export function renderUserPostsPageComponent({ appEl }) {
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
   });
+
+  for(let likeButton of document.querySelectorAll(".like-button")) {
+    likeButton.addEventListener("click", (event) => {
+      const postId = event.currentTarget.dataset.postId;
+      const isLiked = posts.find(post => post.id === postId).isLiked;
+      const token = getToken();
+
+      if(!token) {
+        alert("Необходимо авторизоваться, чтобы поставить лайк");
+        return;
+      }
+      const actionLike = isLiked ? dislikePost : likePost;
+
+        actionLike ({token, postId})
+        .then(() => {
+          return getPosts({token})
+         
+        }).then((newPost) => {
+          setNewPosts(newPost);
+          renderApp();
+        })         
+        .catch((error) => {
+          console.error("Ошибка при убирании лайка:", error);
+          alert("Не удалось убрать лайк. Попробуйте снова.");
+        });
+    });
+  }
+
+
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {

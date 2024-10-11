@@ -1,7 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
-import { dislikePost, likePost } from "../api.js";
+import { posts, goToPage, getToken, renderApp, setNewPosts } from "../index.js";
+import { dislikePost, getPosts, likePost } from "../api.js";
 
 export function renderPostsPageComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
@@ -76,37 +76,27 @@ export function renderPostsPageComponent({ appEl }) {
   for(let likeButton of document.querySelectorAll(".like-button")) {
     likeButton.addEventListener("click", (event) => {
       const postId = event.currentTarget.dataset.postId;
-      const isLiked = posts.find(post => postId === postId).isLiked;
-      const token = user ? `Bearer ${user.token}` : undefined;
+      const isLiked = posts.find(post => post.id === postId).isLiked;
+      const token = getToken();
 
       if(!token) {
         alert("Необходимо авторизоваться, чтобы поставить лайк");
         return;
       }
+      const actionLike = isLiked ? dislikePost : likePost;
 
-      if (isLiked) {
-        dislikePost ({token, postId})
-        .then((updatePost) => {
-          const postIndex = posts.findIndex(post => postId ===postId);
-          postIndex = updatePost;
-          renderPostsPageComponent({appEl});
-        })
+        actionLike ({token, postId})
+        .then(() => {
+          return getPosts({token})
+         
+        }).then((newPost) => {
+          setNewPosts(newPost);
+          renderApp();
+        })         
         .catch((error) => {
           console.error("Ошибка при убирании лайка:", error);
           alert("Не удалось убрать лайк. Попробуйте снова.");
         });
-      }else {
-        likePost({ token, postId })
-          .then((updatedPost) => {
-            const postIndex = posts.findIndex(post => post.id === postId);
-            posts[postIndex] = updatedPost;
-            renderPostsPageComponent({ appEl });
-          })
-          .catch((error) => {
-            console.error("Ошибка при добавлении лайка:", error);
-            alert("Не удалось поставить лайк. Попробуйте снова.");
-          });
-      }
     });
   }
 

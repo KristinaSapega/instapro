@@ -74,7 +74,6 @@ export function addPost({ token, description, imageUrl }) {
     method: "POST",
     headers: {
       Authorization: token,
-      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       description,
@@ -87,9 +86,6 @@ export function addPost({ token, description, imageUrl }) {
     }
     return response.json();
   })
-  .then((data) => {
-    return data.post;
-  });
 }
 
 export function getUserPosts({token, userId}) {
@@ -106,12 +102,12 @@ export function getUserPosts({token, userId}) {
     return response.json();
   })
   .then((data) => {
-    return data.post;
+    return data.posts;
   });
 }
  export function likePost ({token, postId}) {
   return fetch(`${postsHost}/${postId}/like`, {
-    method: POST,
+    method: "POST",
     headers: {
       Authorization: token,
     },
@@ -122,14 +118,12 @@ export function getUserPosts({token, userId}) {
     }
     return response.json();
   })
-  .then ((data) => {
-    return data.post;
-  });
+  
  }
 
  export function dislikePost({token, postId}) {
   return fetch(`${postsHost}/${postId}/dislike`, {
-    method: POST,
+    method: "POST",
     headers: {
       Authorization: token,
     },
@@ -140,7 +134,6 @@ export function getUserPosts({token, userId}) {
     }
     return response.json();
   })
-  .then ((data) => {
-    return data.post;
-  });
+  
+
  }
