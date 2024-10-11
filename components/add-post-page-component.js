@@ -1,4 +1,5 @@
 import { uploadImage } from '../api.js';
+import { sanitize } from '../helpers.js';
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   let uploadedImageUrl = "";
@@ -44,12 +45,17 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     document.getElementById("add-post-form").addEventListener("submit", (event) => {
       event.preventDefault();
       
-      const description = document.getElementById("description").value.trim();
+      let description = document.getElementById("description").value.trim();
+      description = sanitize(description);
 
       if (!description || !uploadedImageUrl) {
         alert("Пожалуйста, добавьте описание и изображение.");
         return;
       }
+
+      
+      console.log("Описание после очистки:", description);
+
 
       onAddPostClick({
         description,
