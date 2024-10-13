@@ -1,22 +1,18 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, getToken, renderApp, setNewPosts } from "../index.js";
+import { posts, goToPage, setNewPosts, getToken, renderApp } from "../index.js";
 import { dislikePost, getPosts, likePost } from "../api.js";
-import {formatDistanceToNow} from "date-fns";
-import { ru } from "date-fns/locale";
-import { sanitize } from "../helpers";
 
-export function renderPostsPageComponent({ appEl }) {
+export function renderUserPostsPageComponent({ appEl }) {
 
   const postsHtml = posts.length
     ? posts
         .map((post) => {
-          const formattedDate = formatDistanceToNow(new Date(post.createdAt), { addSuffix: true, locale: ru });
           return `
             <li class="post">
               <div class="post-header" data-user-id="${post.user.id}">
                   <img src="${post.user.imageUrl}" class="post-header__user-image">
-                  <p class="post-header__user-name">${sanitize(post.user.name)}</p>
+                  <p class="post-header__user-name">${post.user.name}</p>
               </div>
               <div class="post-image-container">
                 <img class="post-image" src="${post.imageUrl}">
@@ -30,7 +26,7 @@ export function renderPostsPageComponent({ appEl }) {
                     post.likes.length === 0
                       ? 0
                       : post.likes.length === 1
-                      ? sanitize (post.likes[0].name)
+                      ? post.likes[0].name
                       : post.likes[post.likes.length - 1].name +
                         " и еще " +
                         (post.likes.length - 1)
@@ -38,11 +34,11 @@ export function renderPostsPageComponent({ appEl }) {
                 </p>
               </div>
               <p class="post-text">
-                <span class="user-name">${sanitize(post.user.name)}</span>
-                ${sanitize(post.description)}
+                <span class="user-name">${post.user.name}</span>
+                ${post.description}
               </p>
               <p class="post-date">
-                ${formattedDate}
+                ${new Date(post.createdAt).toLocaleString()}
               </p>
             </li>
           `;
