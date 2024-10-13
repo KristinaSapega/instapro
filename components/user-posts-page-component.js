@@ -4,13 +4,7 @@ import { posts, goToPage, setNewPosts, getToken, renderApp } from "../index.js";
 import { dislikePost, getPosts, likePost } from "../api.js";
 
 export function renderUserPostsPageComponent({ appEl }) {
-  // TODO: реализовать рендер постов из api
-  console.log("Актуальный список постов:", posts);
 
-  /**
-   * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
-   * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
-   */
   const postsHtml = posts.length
     ? posts
         .map((post) => {

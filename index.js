@@ -74,8 +74,6 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === USER_POSTS_PAGE) {
-      // TODO: реализовать получение постов юзера из API
-      console.log("Открываю страницу пользователя: ", data.userId);
       page = USER_POSTS_PAGE;
       posts = [];
       return getUserPosts({ token: getToken(), userId:data.userId })
@@ -137,7 +135,6 @@ export const renderApp = () => {
         
         addPost({ token, description, imageUrl })
           .then((newPost) => {
-            console.log("Пост добавлен успешно:", newPost);
             goToPage(POSTS_PAGE); // Возврат на страницу постов после добавления
           })
           .catch((error) => {
@@ -156,21 +153,6 @@ export const renderApp = () => {
   }
 
   if (page === USER_POSTS_PAGE) {
-    // TODO: реализовать страницу фотографию пользвателя
-    // page = LOADING_PAGE;
-    // renderApp();
-
-    // return getUserPosts ({token: getToken(), userId: data.userId })
-    // .then((userPosts) => {
-    //   page = USER_POSTS_PAGE;
-    //   posts = userPosts;
-    //   render;
-    // })
-    // .catch((error) => {
-    //   console.error("Ошибка при загрузке постов пользователя:", error);
-    //   alert("Не удалось загрузить посты пользователя");
-    //   goToPage(POSTS_PAGE);
-    // })
     return renderUserPostsPageComponent({appEl})
   }
 };

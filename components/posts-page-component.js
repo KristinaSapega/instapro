@@ -4,15 +4,10 @@ import { posts, goToPage, getToken, renderApp, setNewPosts } from "../index.js";
 import { dislikePost, getPosts, likePost } from "../api.js";
 import {formatDistanceToNow} from "date-fns";
 import { ru } from "date-fns/locale";
+import { sanitize } from "../helpers";
 
 export function renderPostsPageComponent({ appEl }) {
-  // TODO: реализовать рендер постов из api
-  console.log("Актуальный список постов:", posts);
 
-  /**
-   * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
-   * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
-   */
   const postsHtml = posts.length
     ? posts
         .map((post) => {
@@ -21,7 +16,7 @@ export function renderPostsPageComponent({ appEl }) {
             <li class="post">
               <div class="post-header" data-user-id="${post.user.id}">
                   <img src="${post.user.imageUrl}" class="post-header__user-image">
-                  <p class="post-header__user-name">${post.user.name}</p>
+                  <p class="post-header__user-name">${sanitize(post.user.name)}</p>
               </div>
               <div class="post-image-container">
                 <img class="post-image" src="${post.imageUrl}">
@@ -35,7 +30,7 @@ export function renderPostsPageComponent({ appEl }) {
                     post.likes.length === 0
                       ? 0
                       : post.likes.length === 1
-                      ? post.likes[0].name
+                      ? sanitize (post.likes[0].name)
                       : post.likes[post.likes.length - 1].name +
                         " и еще " +
                         (post.likes.length - 1)
@@ -43,8 +38,8 @@ export function renderPostsPageComponent({ appEl }) {
                 </p>
               </div>
               <p class="post-text">
-                <span class="user-name">${post.user.name}</span>
-                ${post.description}
+                <span class="user-name">${sanitize(post.user.name)}</span>
+                ${sanitize(post.description)}
               </p>
               <p class="post-date">
                 ${formattedDate}

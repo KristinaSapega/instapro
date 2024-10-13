@@ -53,9 +53,6 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
         return;
       }
 
-      
-      console.log("Описание после очистки:", description);
-
 
       onAddPostClick({
         description,
